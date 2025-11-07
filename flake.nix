@@ -8,7 +8,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     
     # Fonte "vecchia" per MariaDB 10.4
-    nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-23.05";
   };
 
   # 2. OUTPUTS
