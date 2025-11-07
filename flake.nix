@@ -37,6 +37,9 @@
           pkgs.nodejs_24
           pkgs.tomcat
           pkgs.git
+          pkgs.maven    
+          pkgs.gradle   
+          pkgs.foreman
 
           # Pacchetto da 'pkgs-old' (vecchio)
           # Ora questo è autorizzato a usare openssl 1.1.1w
