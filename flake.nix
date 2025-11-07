@@ -37,7 +37,7 @@
 
           # Per il database
           # Questo ti darà la serie 10.4 di MariaDB
-          pkgs.mariadb # Spesso esiste un alias come pkgs.mariadb_10_4, ma pkgs.mariadb è più comune e stabile.
+          pkgs.mariadb_10_4
 
           # Il server Apache Tomcat (come da tuoi requisiti)
           pkgs.tomcat
