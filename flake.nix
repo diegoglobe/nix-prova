@@ -39,7 +39,7 @@
           pkgs.git
 
           # Pacchetto da 'pkgs-old' (vecchio)
-          mariadb_104 
+          pkgs-old.mariadb_104 
         ];
       };
     };
