@@ -9,40 +9,38 @@
   outputs = { self, nixpkgs, nixpkgs-old, ... }:
     let
       system = "x86_64-linux";
-      
-      # Pacchetti dal canale NUOVO (unstable)
       pkgs = nixpkgs.legacyPackages.${system};
-      
-      # MODIFICA QUI:
-      # Pacchetti dal canale VECCHIO
-      # Importiamo 'nixpkgs-old' come una funzione per passargli
-      # la nostra configurazione di override per i pacchetti insicuri.
       pkgs-old = import nixpkgs-old {
         inherit system;
-        config = {
-          # Autorizziamo specificamente OpenSSL 1.1.1w
-          permittedInsecurePackages = [
-            "openssl-1.1.1w"
-          ];
-        };
+        config.permittedInsecurePackages = [ "openssl-1.1.1w" ];
       };
+
+      # --- DEFINIZIONE PHP CON ESTENSIONI ---
+      # Questo crea un pacchetto "php82" che include
+      # le estensioni che hai richiesto (mysqli, curl, mbstring)
+      php82 = pkgs.php82.withExtensions (ep: [
+        ep.mysqli
+        ep.curl
+        ep.mbstring
+      ]);
 
     in
     {
       devShells.${system}.default = pkgs.mkShell {
-        
         buildInputs = [
-          # Pacchetti da 'pkgs' (nuovo)
+          # --- App Stack ---
           pkgs.jdk21
+          pkgs.maven
           pkgs.nodejs_24
-          pkgs.tomcat
-          pkgs.git
-          pkgs.maven    
-          pkgs.gradle   
-          pkgs.foreman
 
-          # Pacchetto da 'pkgs-old' (vecchio)
-          # Ora questo è autorizzato a usare openssl 1.1.1w
+          # --- NUOVO: Web Admin Stack ---
+          pkgs.apacheHttpd     # Apache 2.4.x
+          php82                # Il nostro PHP custom
+          pkgs.php82Packages.php-fpm # Il servizio FPM
+          pkgs.phpmyadmin      # L'app phpMyAdmin
+
+          # --- Management Stack ---
+          pkgs.foreman
           pkgs-old.mariadb_104
         ];
       };
