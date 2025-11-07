@@ -1,53 +1,45 @@
 {
-  description = "AMBIENTE DI TEST";
-  #NIXPKGS repository ufficiale per nix
+  description = "Ambiente di test per l'applicativo Spring/Angular";
+
+  # 1. INPUTS
+  # Definiamo le nostre due fonti di pacchetti
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-	
-	# MODIFICA 1: Aggiungiamo una fonte "vecchia"
-    # per trovare pacchetti EOL (End of Life)
+    # Fonte principale e aggiornata
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    # Fonte "vecchia" per MariaDB 10.4
     nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-23.11";
   };
 
-  #outputs = { self, nixpkgs }: {
-  #
-  # packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
-  #
-  # packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
-  #
- #};
-  # 2. OUTPUTS (I Piatti Pronti)
-  # Qui definiamo cosa "produce" questo flake.
+  # 2. OUTPUTS
+  # Assicurati che "nixpkgs-old" sia qui negli argomenti
   outputs = { self, nixpkgs, nixpkgs-old, ... }:
     let
-      # Specifichiamo di voler pacchetti per il sistema Linux a 64-bit
-      # (perfetto per il tuo WSL/Debian)
+      # Definiamo il sistema
       system = "x86_64-linux";
+      
+      # Pacchetti dal canale NUOVO (unstable)
       pkgs = nixpkgs.legacyPackages.${system};
+      
+      # Definiamo i pacchetti dal canale VECCHIO
+      # Assicurati che "pkgs-old" sia definito qui
+      pkgs-old = nixpkgs-old.legacyPackages.${system};
+
     in
     {
-      # Definiamo il nostro ambiente di sviluppo principale
+      # 3. La Shell
+      # Tutto ciò che è nel blocco 'let' è visibile qui
       devShells.${system}.default = pkgs.mkShell {
-
-        # 3. BUILD INPUTS (La Lista della Spesa)
-        # Questo è il cuore: elenchiamo i pacchetti che ci servono.
+        
         buildInputs = [
-          # Per il backend Java Spring Boot
+          # Pacchetti da 'pkgs' (nuovo)
           pkgs.jdk21
-
-          # Per il frontend Angular
-          # Questo pacchetto include sia Node.js v24 che npm v11
           pkgs.nodejs_24
-
-          # Per il database
-          # Questo ti darà la serie 10.4 di MariaDB # # MODIFICA 3: Pacchetto preso dal canale VECCHIO!
-          pkgs-old.mariadb_10_4
-
-          # Il server Apache Tomcat (come da tuoi requisiti)
           pkgs.tomcat
-
-          # Strumenti utili (opzionali ma raccomandati)
           pkgs.git
+
+          # Pacchetto da 'pkgs-old' (vecchio)
+          pkgs-old.mariadb_10_4
         ];
       };
     };
