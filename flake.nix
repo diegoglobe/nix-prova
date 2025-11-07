@@ -40,7 +40,7 @@
 
           # Pacchetto da 'pkgs-old' (vecchio)
           # Ora questo è autorizzato a usare openssl 1.1.1w
-          pkgs-old.mariadb_10_4
+          pkgs-old.mariadb_104
         ];
       };
     };
