@@ -19,7 +19,7 @@
       # Questo crea un pacchetto "php82" che include
       # le estensioni che hai richiesto (mysqli, curl, mbstring)
       php82 = pkgs.php82.withExtensions (ep: [
-        ep.mysql
+        ep.mysqli
         ep.curl
         ep.mbstring
       ]);
