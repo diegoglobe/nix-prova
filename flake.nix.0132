@@ -2,13 +2,7 @@
   description = "Ambiente di test per l'applicativo Spring/Angular";
 
   inputs = {
-    #
-    # --- MODIFICA CHIAVE QUI ---
-    # Invece di "nixos-unstable", usiamo un commit specifico
-    # (di fine Ottobre 2024) dove php82.mysqli esiste.
-    nixpkgs.url = "github:NixOS/nixpkgs/f7f2d593a105f93012cf13d523605b820b085368";
-    #
-    #
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-23.05";
   };
 
@@ -22,9 +16,10 @@
       };
 
       # --- DEFINIZIONE PHP CON ESTENSIONI ---
-      # Ora 'pkgs' è aggiornato, quindi 'ep.mysqli' verrà trovato.
+      # Questo crea un pacchetto "php82" che include
+      # le estensioni che hai richiesto (mysqli, curl, mbstring)
       php82 = pkgs.php82.withExtensions (ep: [
-        ep.mysqli 
+        ep.mysqli
         ep.curl
         ep.mbstring
       ]);
@@ -38,11 +33,11 @@
           pkgs.maven
           pkgs.nodejs_24
 
-          # --- Web Admin Stack ---
-          pkgs.apacheHttpd
+          # --- NUOVO: Web Admin Stack ---
+          pkgs.apacheHttpd     # Apache 2.4.x
           php82                # Il nostro PHP custom
-          pkgs.php82Packages.php-fpm
-          pkgs.phpmyadmin
+          pkgs.php82Packages.php-fpm # Il servizio FPM
+          pkgs.phpmyadmin      # L'app phpMyAdmin
 
           # --- Management Stack ---
           pkgs.foreman
