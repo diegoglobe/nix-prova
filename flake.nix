@@ -1,5 +1,4 @@
-{
-  description = "Ambiente di test per l'applicativo Spring/Angular";
+ption = "Ambiente di test per l'applicativo Spring/Angular";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -16,12 +15,10 @@
       };
 
       # --- DEFINIZIONE PHP (dal set VECCHIO) ---
-      # Includiamo TUTTE le estensioni necessarie
       php82 = pkgs-old.php82.withExtensions (ep: [
         
-        # --- MODIFICA CHIAVE QUI ---
-        ep.mysqli   # L'estensione che ci serve
-        ep.mysqlnd  # Il driver NATIVO richiesto
+        # --- TENTATIVO FINALE: Usiamo l'altra estensione che hai trovato ---
+        ep.pdo_mysql 
         
         ep.curl
         ep.mbstring
