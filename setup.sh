@@ -32,7 +32,7 @@ if [ ! -d "$DB_DATA_DIR/mysql" ]; then
       ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
       
       -- 2. Imposta la password per 'diego' (la tua richiesta)
-      ALTER USER 'diego'@'localhost' IDENTIFIED BY 'diego_password_sicura'; -- (Sostituisci con la tua scelta)
+      ALTER USER 'diego'@'localhost' IDENTIFIED BY 'diego'; -- (Sostituisci con la tua scelta)
 
       -- 3. Crea e imposta 'mariorossi' (la tua richiesta)
       CREATE USER 'mariorossi'@'localhost' IDENTIFIED BY 'mario';
