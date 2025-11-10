@@ -1,47 +1,27 @@
-#!/bin/bash
-# Questo è ~/nix-prova/setup.sh
+#!/bin-bash
 set -e
 
-# Controlliamo se il setup è GIA' stato fatto
-if [ -d "db-data/mysql" ]; then
-  echo "Database già inizializzato in ./db-data. Salto il setup."
+# Definiamo il percorso assoluto
+DB_DATA_DIR="/home/diego/nix-prova/db-data"
+
+# --- SETUP DATABASE ---
+if [ ! -d "$DB_DATA_DIR/mysql" ]; then
+  echo "Inizializzazione database MariaDB in $DB_DATA_DIR..."
+  mkdir -p $DB_DATA_DIR
+  # Usiamo il percorso assoluto qui
+  mysql_install_db --user=$(whoami) --datadir=$DB_DATA_DIR
+  echo "Database inizializzato."
 else
-  echo "Inizializzazione database MariaDB..."
-  # 1. Creiamo la cartella per i dati
-  mkdir -p db-data
-  # 2. Eseguiamo l'installazione che crea l'utente root@localhost
-  #    e punta alla nostra cartella dati
-  mysql_install_db --user=$(whoami) --datadir=./db-data
-  echo "Database inizializzato con successo."
+  echo "Database già inizializzato in $DB_DATA_DIR. Salto."
 fi
 
-# --- SETUP FRONTEND (Esistente) ---
-# (Aggiorna questo percorso!)
+# --- SETUP FRONTEND ---
+# (Sostituisci questo percorso!)
 FRONTEND_DIR="./NOME_CODICE/frontend-angular"
-if [ -d "$FRONTEND_DIR/node_modules" ]; then
-  echo "Dipendenze Frontend già installate. Salto."
-else
+if [ ! -d "$FRONTEND_DIR/node_modules" ]; then
   echo "Installazione dipendenze Frontend (npm install)..."
   npm install --prefix $FRONTEND_DIR
   echo "Dipendenze Frontend installate."
 fi
 
-# --- NUOVO: SETUP PHPMYADMIN ---
-# phpMyAdmin cerca il suo config in un percorso specifico.
-# Creiamo un link simbolico dal nostro file.
-PHPMYADMIN_CONFIG_DIR="${pkgs.phpmyadmin}/share/phpmyadmin"
-if [ -f "$PHPMYADMIN_CONFIG_DIR/config.inc.php" ]; then
-  echo "Configurazione phpMyAdmin già collegata. Salto."
-else
-  echo "Collegamento configurazione phpMyAdmin..."
-  # Nota: Questo è un trucco. Stiamo creando un link
-  # dentro l'ambiente nix, che è di sola lettura.
-  # Il comando 'php-fpm' nel Procfile è un modo migliore
-  # per iniettare il file di config.
-  # Per ora, il Procfile gestisce già la config.
-  echo "Configurazione phpMyAdmin gestita da Procfile."
-fi
-
-
-echo ""
 echo "Setup completato."
