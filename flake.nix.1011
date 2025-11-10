@@ -23,9 +23,10 @@
       };
 
       # --- DEFINIZIONE PHP (dal set VECCHIO) ---
-      # Come confermato dal tuo 'nix search', il nome è 'mysqli'
+      # Usiamo 'pkgs-old' per PHP e le sue estensioni.
+      # Nel ramo 23.05, 'mysqli' esiste e funziona.
       php82 = pkgs-old.php82.withExtensions (ep: [
-        ep.mysqli 
+        ep.mysql 
         ep.curl
         ep.mbstring
       ]);
