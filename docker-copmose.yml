@@ -1,0 +1,11 @@
+version: '3.1'
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: nix-phpmyadmin
+    ports:
+      - "8081:80" # Lo mettiamo sulla porta 8081
+    environment:
+      PMA_HOST: 172.17.0.1 # IP del tuo host Docker da dentro WSL
+      PMA_PORT: 3306
+    restart: always
