@@ -2,27 +2,30 @@
   description = "Ambiente di test per l'applicativo Spring/Angular";
 
   inputs = {
+    # Per i pacchetti 'nuovi' (Node 24, Java 21)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    # Per i pacchetti 'vecchi' (MariaDB 10.4, PHP 8.2)
     nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-23.05";
   };
 
   outputs = { self, nixpkgs, nixpkgs-old, ... }:
     let
       system = "x86_64-linux";
+      
+      # --- SET DI PACCHETTI NUOVI (da unstable) ---
       pkgs = nixpkgs.legacyPackages.${system};
+      
+      # --- SET DI PACCHETTI VECCHI (da 23.05) ---
       pkgs-old = import nixpkgs-old {
         inherit system;
         config.permittedInsecurePackages = [ "openssl-1.1.1w" ];
       };
 
       # --- DEFINIZIONE PHP (dal set VECCHIO) ---
-      # Includiamo TUTTE le estensioni necessarie
+      # Come confermato dal tuo 'nix search', il nome è 'mysqli'
       php82 = pkgs-old.php82.withExtensions (ep: [
-        
-        # --- MODIFICA CHIAVE QUI ---
-        ep.mysqli   # L'estensione che ci serve
-        ep.mysqlnd  # Il driver NATIVO richiesto
-        
+        ep.mysql 
         ep.curl
         ep.mbstring
       ]);
